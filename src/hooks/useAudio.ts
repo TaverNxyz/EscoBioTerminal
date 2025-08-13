@@ -1,5 +1,4 @@
-// src/hooks/useAudio.ts
-// Create this file in your project
+// src/hooks/useAudio.ts - Complete version with file playback
 import { useState, useRef, useCallback } from 'react';
 
 interface AudioHookReturn {
@@ -7,6 +6,8 @@ interface AudioHookReturn {
   enableAudio: () => Promise<void>;
   playSound: (frequency: number, duration: number, type?: OscillatorType) => void;
   playAudioFile: (audioSrc: string) => Promise<void>;
+  playBackgroundMusic: (audioSrc: string, loop?: boolean) => Promise<HTMLAudioElement>;
+  stopAudio: (audio?: HTMLAudioElement) => void;
   audioError: string | null;
 }
 
@@ -14,10 +15,10 @@ export const useAudio = (): AudioHookReturn => {
   const [isAudioEnabled, setIsAudioEnabled] = useState(false);
   const [audioError, setAudioError] = useState<string | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
+  const currentAudioRef = useRef<HTMLAudioElement | null>(null);
 
   const enableAudio = useCallback(async () => {
     try {
-      // Create AudioContext - this MUST be called from a user interaction
       const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
       if (!AudioContextClass) {
         throw new Error('AudioContext not supported');
@@ -25,7 +26,6 @@ export const useAudio = (): AudioHookReturn => {
 
       audioContextRef.current = new AudioContextClass();
 
-      // Resume if suspended
       if (audioContextRef.current.state === 'suspended') {
         await audioContextRef.current.resume();
       }
@@ -40,6 +40,7 @@ export const useAudio = (): AudioHookReturn => {
     }
   }, []);
 
+  // Generate sounds (beeps, tones)
   const playSound = useCallback((frequency: number, duration: number, type: OscillatorType = 'sine') => {
     if (!audioContextRef.current || !isAudioEnabled) {
       console.warn('Audio not enabled');
@@ -56,7 +57,6 @@ export const useAudio = (): AudioHookReturn => {
       oscillator.frequency.setValueAtTime(frequency, audioContextRef.current.currentTime);
       oscillator.type = type;
 
-      // Envelope for smooth sound
       gainNode.gain.setValueAtTime(0, audioContextRef.current.currentTime);
       gainNode.gain.linearRampToValueAtTime(0.3, audioContextRef.current.currentTime + 0.01);
       gainNode.gain.exponentialRampToValueAtTime(0.001, audioContextRef.current.currentTime + duration / 1000);
@@ -68,13 +68,73 @@ export const useAudio = (): AudioHookReturn => {
     }
   }, [isAudioEnabled]);
 
+  // Play audio files (MP3, WAV, etc.) - Simple version
   const playAudioFile = useCallback(async (audioSrc: string): Promise<void> => {
+    if (!isAudioEnabled) {
+      throw new Error('Audio not enabled');
+    }
+
     try {
+      // Create HTML5 Audio element
       const audio = new Audio(audioSrc);
-      await audio.play();
+      
+      // Wait for it to load and play
+      await new Promise<void>((resolve, reject) => {
+        audio.addEventListener('loadeddata', () => {
+          audio.play()
+            .then(() => resolve())
+            .catch(reject);
+        });
+        audio.addEventListener('error', () => {
+          reject(new Error(`Failed to load audio: ${audioSrc}`));
+        });
+      });
     } catch (error) {
       console.error('Error playing audio file:', error);
       throw error;
+    }
+  }, [isAudioEnabled]);
+
+  // Play background music with loop option
+  const playBackgroundMusic = useCallback(async (audioSrc: string, loop: boolean = true): Promise<HTMLAudioElement> => {
+    if (!isAudioEnabled) {
+      throw new Error('Audio not enabled');
+    }
+
+    try {
+      // Stop current background music if playing
+      if (currentAudioRef.current) {
+        currentAudioRef.current.pause();
+        currentAudioRef.current = null;
+      }
+
+      // Create new audio element
+      const audio = new Audio(audioSrc);
+      audio.loop = loop;
+      audio.volume = 0.5; // Set volume to 50%
+      
+      // Store reference so we can stop it later
+      currentAudioRef.current = audio;
+
+      // Play the audio
+      await audio.play();
+      
+      return audio;
+    } catch (error) {
+      console.error('Error playing background music:', error);
+      throw error;
+    }
+  }, [isAudioEnabled]);
+
+  // Stop audio
+  const stopAudio = useCallback((audio?: HTMLAudioElement) => {
+    if (audio) {
+      audio.pause();
+      audio.currentTime = 0;
+    } else if (currentAudioRef.current) {
+      currentAudioRef.current.pause();
+      currentAudioRef.current.currentTime = 0;
+      currentAudioRef.current = null;
     }
   }, []);
 
@@ -83,6 +143,8 @@ export const useAudio = (): AudioHookReturn => {
     enableAudio,
     playSound,
     playAudioFile,
+    playBackgroundMusic,
+    stopAudio,
     audioError
   };
 };
