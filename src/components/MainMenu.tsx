@@ -128,7 +128,7 @@ export const MainMenu = ({ onSelection }: MainMenuProps) => {
         loop
         preload="auto"
       >
-        <source src="https://github.com/TaverNxyz/EscoBioTerminal/raw/main/public/gothic-ambient.mp3" type="audio/mpeg" />
+        <source src="/background-music.mp3" type="audio/mpeg" />
       </audio>
 
       {/* Audio Control Prompt */}
