@@ -77,11 +77,13 @@ export const MainMenu = ({ onSelection }: MainMenuProps) => {
           <div className="text-muted-foreground mb-4">
             <span className="text-warning">[INFO]</span> Available destinations detected...
           </div>
-          <div className="text-muted-foreground mb-6">
-            <span className="text-info">[SYSTEM]</span> Select target for connection:
+          
+          {/* Social/Profile Section */}
+          <div className="text-muted-foreground mb-2">
+            <span className="text-info">[SOCIAL]</span> Personal profiles and accounts:
           </div>
           
-          <div className="menu-options-linux">
+          <div className="menu-options-linux mb-6">
             <MenuOption 
               href="https://discord.com/users/1256365134826311751" 
               type="Discord Profile"
@@ -109,6 +111,42 @@ export const MainMenu = ({ onSelection }: MainMenuProps) => {
               onSelect={onSelection}
             >
               Crypto Exchange <span className="crypto-coin"></span>
+            </MenuOption>
+          </div>
+
+          {/* Projects Section */}
+          <div className="text-muted-foreground mb-2">
+            <span className="text-success">[PROJECTS]</span> Development portfolio and work:
+          </div>
+          
+          <div className="menu-options-linux mb-6">
+            <MenuOption 
+              href="https://publicized.ragelive.xyz/" 
+              type="Project"
+              onSelect={onSelection}
+            >
+              RageLive Public
+            </MenuOption>
+            <MenuOption 
+              href="https://plentifulpower.xyz/" 
+              type="Project"
+              onSelect={onSelection}
+            >
+              Plentiful Power
+            </MenuOption>
+            <MenuOption 
+              href="https://main.plentifulpower.xyz/" 
+              type="Project"
+              onSelect={onSelection}
+            >
+              Plentiful Power Main
+            </MenuOption>
+            <MenuOption 
+              href="https://archive.plentifulpower.xyz/" 
+              type="Project"
+              onSelect={onSelection}
+            >
+              Plentiful Power Archive
             </MenuOption>
           </div>
           
