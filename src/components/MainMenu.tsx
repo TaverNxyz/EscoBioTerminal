@@ -44,7 +44,7 @@ export const MainMenu = ({ onSelection }: MainMenuProps) => {
     setShowAudioPrompt(false);
     
     if (enabled && audioRef.current) {
-      audioRef.current.volume = 0.15; // 15% volume - neutral gothic ambiance
+      audioRef.current.volume = 0.075; // Half of current volume (7.5%)
       audioRef.current.play().catch(console.error);
     }
   };
