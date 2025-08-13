@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 
 interface MainMenuProps {
   onSelection: (option: string, url: string) => void;
@@ -26,6 +26,40 @@ const menuEntries: MenuEntry[] = [
 export const MainMenu = ({ onSelection }: MainMenuProps) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [bootTime, setBootTime] = useState(0);
+  const [showAudioPrompt, setShowAudioPrompt] = useState(false);
+  const [audioEnabled, setAudioEnabled] = useState(false);
+  const audioRef = useRef<HTMLAudioElement>(null);
+
+  // Audio setup and prompt
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowAudioPrompt(true);
+    }, 1500); // Show prompt after 1.5 seconds
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  const handleAudioChoice = (enabled: boolean) => {
+    setAudioEnabled(enabled);
+    setShowAudioPrompt(false);
+    
+    if (enabled && audioRef.current) {
+      audioRef.current.volume = 0.15; // 15% volume - neutral gothic ambiance
+      audioRef.current.play().catch(console.error);
+    }
+  };
+
+  const toggleAudio = () => {
+    if (audioRef.current) {
+      if (audioRef.current.paused) {
+        audioRef.current.play();
+        setAudioEnabled(true);
+      } else {
+        audioRef.current.pause();
+        setAudioEnabled(false);
+      }
+    }
+  };
 
   // Lightning animation
   useEffect(() => {
@@ -88,6 +122,49 @@ export const MainMenu = ({ onSelection }: MainMenuProps) => {
 
   return (
     <div className="fixed inset-0 bg-black text-white font-mono overflow-hidden">
+      {/* Audio Element */}
+      <audio
+        ref={audioRef}
+        loop
+        preload="auto"
+      >
+        <source src="https://www.soundjay.com/misc/sounds/bell-ringing-05.wav" type="audio/wav" />
+        {/* You'll want to replace this with your chosen gothic/ambient track */}
+        {/* Example alternatives you can use:
+        <source src="/path-to-your-song.mp3" type="audio/mpeg" />
+        Or use a URL to a royalty-free gothic ambient track
+        */}
+      </audio>
+
+      {/* Audio Control Prompt */}
+      {showAudioPrompt && (
+        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
+          <div className="bg-blue-900 border-2 border-blue-500 p-6 rounded-lg text-center max-w-md">
+            <div className="text-yellow-400 font-bold mb-4">🎵 AUDIO SUBSYSTEM DETECTED</div>
+            <div className="text-gray-300 mb-4">
+              Enable ambient gothic soundtrack for your terminal session?
+            </div>
+            <div className="text-sm text-gray-400 mb-6">
+              (Low volume ambient music will play in background)
+            </div>
+            <div className="flex gap-4 justify-center">
+              <button
+                onClick={() => handleAudioChoice(true)}
+                className="bg-green-700 hover:bg-green-600 px-4 py-2 rounded font-bold"
+              >
+                ENABLE AUDIO
+              </button>
+              <button
+                onClick={() => handleAudioChoice(false)}
+                className="bg-red-700 hover:bg-red-600 px-4 py-2 rounded font-bold"
+              >
+                SILENT MODE
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Lightning Background */}
       <div className="lightning-container absolute inset-0 pointer-events-none">
         <div className="absolute inset-0 bg-gradient-to-br from-purple-900/10 via-black to-blue-900/10"></div>
@@ -103,6 +180,9 @@ export const MainMenu = ({ onSelection }: MainMenuProps) => {
 
       {/* Main GRUB Menu */}
       <div className="absolute top-20 left-1/2 transform -translate-x-1/2 w-full max-w-4xl px-8">
+        {/* Spacer for avatar section */}
+        <div className="h-20 mb-4"></div>
+        
         {/* Boot info */}
         <div className="mb-8 text-gray-400 text-sm">
           <div>Booting tcp.dns Terminal Interface v2.52...</div>
@@ -159,17 +239,42 @@ export const MainMenu = ({ onSelection }: MainMenuProps) => {
         </div>
       </div>
 
-      {/* Avatar in corner */}
-      <div className="absolute top-24 right-8">
-        <div className="w-16 h-16 rounded border-2 border-blue-500 overflow-hidden">
-          <div 
-            className="w-full h-full bg-cover bg-center"
-            style={{
-              backgroundImage: `url(/lovable-uploads/5991336c-bb16-4a71-884c-2a3e73be27be.png)`
-            }}
-          />
+      {/* Audio Control Button */}
+      <button
+        onClick={toggleAudio}
+        className="absolute top-4 right-4 z-40 bg-purple-700/50 hover:bg-purple-600/70 border border-purple-500 px-3 py-1 rounded text-xs font-bold transition-all"
+        title="Toggle Audio"
+      >
+        {audioEnabled ? '🔊' : '🔇'}
+      </button>
+
+      {/* Prominent Avatar Section */}
+      <div className="absolute top-20 left-8">
+        <div className="flex items-center space-x-4">
+          {/* Avatar with enhanced visibility */}
+          <div className="relative">
+            <div className="w-24 h-24 rounded-lg border-4 border-yellow-400 overflow-hidden shadow-2xl bg-gray-800">
+              <div 
+                className="w-full h-full bg-cover bg-center transform hover:scale-105 transition-transform duration-300"
+                style={{
+                  backgroundImage: `url(/lovable-uploads/5991336c-bb16-4a71-884c-2a3e73be27be.png)`
+                }}
+              />
+            </div>
+            {/* Glowing border effect */}
+            <div className="absolute inset-0 w-24 h-24 rounded-lg border-4 border-yellow-400 animate-pulse shadow-lg shadow-yellow-400/50"></div>
+          </div>
+          
+          {/* User info panel */}
+          <div className="bg-blue-900/30 border border-blue-500/50 rounded-lg p-4 backdrop-blur-sm">
+            <div className="text-yellow-400 font-bold text-lg mb-1">tcp.dns</div>
+            <div className="text-gray-300 text-sm">System Administrator</div>
+            <div className="text-gray-400 text-xs mt-1">Terminal Interface v2.52</div>
+            <div className="text-blue-400 text-xs mt-2">
+              ● Online • Authenticated
+            </div>
+          </div>
         </div>
-        <div className="text-center mt-2 text-xs text-blue-400">tcp.dns</div>
       </div>
 
       <style jsx>{`
