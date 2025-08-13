@@ -128,7 +128,7 @@ export const MainMenu = ({ onSelection }: MainMenuProps) => {
         loop
         preload="auto"
       >
-        <source src="https://www.soundjay.com/misc/sounds/bell-ringing-05.wav" type="audio/wav" />
+        <source src="public/gothic-ambient.mp3" />
         {/* You'll want to replace this with your chosen gothic/ambient track */}
         {/* Example alternatives you can use:
         <source src="/path-to-your-song.mp3" type="audio/mpeg" />
