@@ -128,12 +128,7 @@ export const MainMenu = ({ onSelection }: MainMenuProps) => {
         loop
         preload="auto"
       >
-        <source src="https://github.com/TaverNxyz/EscoBioTerminal/blob/main/public/gothic-ambient.mp3" />
-        {/* You'll want to replace this with your chosen gothic/ambient track */}
-        {/* Example alternatives you can use:
-        <source src="/path-to-your-song.mp3" type="audio/mpeg" />
-        Or use a URL to a royalty-free gothic ambient track
-        */}
+        <source src="https://github.com/TaverNxyz/EscoBioTerminal/raw/main/public/gothic-ambient.mp3" type="audio/mpeg" />
       </audio>
 
       {/* Audio Control Prompt */}
@@ -142,7 +137,7 @@ export const MainMenu = ({ onSelection }: MainMenuProps) => {
           <div className="bg-blue-900 border-2 border-blue-500 p-6 rounded-lg text-center max-w-md">
             <div className="text-yellow-400 font-bold mb-4">🎵 AUDIO SUBSYSTEM DETECTED</div>
             <div className="text-gray-300 mb-4">
-              Enable ambient gothic soundtrack for your terminal session?
+              Enable dark ambient soundtrack for your terminal session?
             </div>
             <div className="text-sm text-gray-400 mb-6">
               (Low volume ambient music will play in background)
@@ -180,8 +175,22 @@ export const MainMenu = ({ onSelection }: MainMenuProps) => {
 
       {/* Main GRUB Menu */}
       <div className="absolute top-20 left-1/2 transform -translate-x-1/2 w-full max-w-4xl px-8">
-        {/* Spacer for avatar section */}
-        <div className="h-20 mb-4"></div>
+        {/* Large Avatar Section - Positioned above everything */}
+        <div className="flex justify-center mb-8">
+          <div className="relative">
+            <div className="w-48 h-48 rounded-lg border-4 border-red-500 overflow-hidden shadow-2xl bg-gray-800">
+              <div 
+                className="w-full h-full bg-cover bg-center"
+                style={{
+                  backgroundImage: `url(/lovable-uploads/5991336c-bb16-4a71-884c-2a3e73be27be.png)`,
+                  filter: 'none'
+                }}
+              />
+            </div>
+            {/* Subtle dark glow effect */}
+            <div className="absolute inset-0 w-48 h-48 rounded-lg border-4 border-red-500 shadow-lg shadow-red-500/20"></div>
+          </div>
+        </div>
         
         {/* Boot info */}
         <div className="mb-8 text-gray-400 text-sm">
@@ -248,31 +257,14 @@ export const MainMenu = ({ onSelection }: MainMenuProps) => {
         {audioEnabled ? '🔊' : '🔇'}
       </button>
 
-      {/* Prominent Avatar Section */}
+      {/* User info panel - moved to left side */}
       <div className="absolute top-20 left-8">
-        <div className="flex items-center space-x-4">
-          {/* Avatar with enhanced visibility */}
-          <div className="relative">
-            <div className="w-24 h-24 rounded-lg border-4 border-yellow-400 overflow-hidden shadow-2xl bg-gray-800">
-              <div 
-                className="w-full h-full bg-cover bg-center transform hover:scale-105 transition-transform duration-300"
-                style={{
-                  backgroundImage: `url(/lovable-uploads/5991336c-bb16-4a71-884c-2a3e73be27be.png)`
-                }}
-              />
-            </div>
-            {/* Glowing border effect */}
-            <div className="absolute inset-0 w-24 h-24 rounded-lg border-4 border-yellow-400 animate-pulse shadow-lg shadow-yellow-400/50"></div>
-          </div>
-          
-          {/* User info panel */}
-          <div className="bg-blue-900/30 border border-blue-500/50 rounded-lg p-4 backdrop-blur-sm">
-            <div className="text-yellow-400 font-bold text-lg mb-1">tcp.dns</div>
-            <div className="text-gray-300 text-sm">System Administrator</div>
-            <div className="text-gray-400 text-xs mt-1">Terminal Interface v2.52</div>
-            <div className="text-blue-400 text-xs mt-2">
-              ● Online • Authenticated
-            </div>
+        <div className="bg-gray-900/50 border border-gray-600/50 rounded-lg p-4 backdrop-blur-sm">
+          <div className="text-red-400 font-bold text-lg mb-1">tcp.dns</div>
+          <div className="text-gray-300 text-sm">System Administrator</div>
+          <div className="text-gray-400 text-xs mt-1">Terminal Interface v2.52</div>
+          <div className="text-red-400 text-xs mt-2">
+            ● Online • Authenticated
           </div>
         </div>
       </div>
