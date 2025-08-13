@@ -36,13 +36,7 @@ export const MainMenu = ({ onSelection }: MainMenuProps) => {
       setShowAudioPrompt(true);
     }, 1500); // Show prompt after 1.5 seconds
 
-    return () => {
-      clearTimeout(timer);
-      // Cleanup audio to prevent interrupted play requests
-      if (audioRef.current) {
-        audioRef.current.pause();
-      }
-    };
+    return () => clearTimeout(timer);
   }, []);
 
   const handleAudioChoice = (enabled: boolean) => {
