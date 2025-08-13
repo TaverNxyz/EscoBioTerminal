@@ -128,7 +128,7 @@ export const MainMenu = ({ onSelection }: MainMenuProps) => {
         loop
         preload="auto"
       >
-        <source src="public/gothic-ambient.mp3" />
+        <source src="https://github.com/TaverNxyz/EscoBioTerminal/blob/main/public/gothic-ambient.mp3" />
         {/* You'll want to replace this with your chosen gothic/ambient track */}
         {/* Example alternatives you can use:
         <source src="/path-to-your-song.mp3" type="audio/mpeg" />
