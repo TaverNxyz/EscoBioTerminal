@@ -48,7 +48,7 @@ export const MainMenu = ({ onSelection }: MainMenuProps) => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowAudioPrompt(true);
-    }, 1500); // Show prompt after 1.5 seconds
+    }, 1500);
     return () => clearTimeout(timer);
   }, []);
 
@@ -163,35 +163,74 @@ export const MainMenu = ({ onSelection }: MainMenuProps) => {
       </div>
 
       {/* GRUB Header */}
-      <div className="absolute top-0 left-0 right-0 p-4 bg-blue-600 text-white text-center">
+      <div className="absolute top-0 left-0 right-0 p-3 bg-blue-600 text-white text-center">
         <div className="text-lg font-bold">GNU GRUB version 2.06</div>
         <div className="text-sm">tcp.dns Boot Manager</div>
       </div>
 
-      {/* Main Menu */}
-      <div className="absolute top-20 left-1/2 transform -translate-x-1/2 w-full max-w-4xl px-8">
-        {/* Avatar */}
-        <div className="flex justify-center mb-8">
+      {/* Payment Bar - Now at top for visibility */}
+      <div className="absolute top-16 left-0 right-0 px-4 z-30">
+        <div className="bg-purple-900/80 border border-purple-500/50 rounded-lg p-3 backdrop-blur-sm">
+          <div className="text-yellow-400 font-bold text-sm mb-2 text-center">💰 PAYMENT LINKS</div>
+          <div className="flex flex-wrap justify-center gap-2">
+            {paymentEntries.map((pay, i) => (
+              <div key={i} className="flex items-center bg-gray-800/60 hover:bg-gray-700/70 px-3 py-2 rounded-lg transition-all">
+                <span className="text-gray-200 font-mono text-sm mr-2 font-bold">{pay.title}:</span>
+                <span className="text-gray-300 text-xs mr-2 max-w-32 truncate" title={pay.value}>
+                  {pay.value.length > 20 ? `${pay.value.slice(0,8)}...${pay.value.slice(-8)}` : pay.value}
+                </span>
+                <button
+                  onClick={() => copyToClipboard(pay.value)}
+                  className="bg-purple-700 hover:bg-purple-600 text-xs px-2 py-1 rounded font-bold transition-all"
+                >
+                  {copied === pay.value ? "✔" : "COPY"}
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* User Info - Moved down to accommodate payment bar */}
+      <div className="absolute top-32 left-8">
+        <div className="bg-gray-900/50 border border-gray-600/50 rounded-lg p-4 backdrop-blur-sm">
+          <div className="text-red-400 font-bold text-lg mb-1">tcp.dns</div>
+          <div className="text-gray-300 text-sm">System Administrator</div>
+          <div className="text-gray-400 text-xs mt-1">Terminal Interface v2.52</div>
+          <div className="text-red-400 text-xs mt-2">● Online • Authenticated</div>
+        </div>
+      </div>
+
+      {/* Audio Toggle */}
+      <button
+        onClick={toggleAudio}
+        className="absolute top-32 right-8 z-40 bg-purple-700/50 hover:bg-purple-600/70 border border-purple-500 px-3 py-1 rounded text-xs font-bold transition-all"
+        title="Toggle Audio"
+      >
+        {audioEnabled ? '🔊' : '🔇'}
+      </button>
+
+      {/* Main Menu - Adjusted positioning */}
+      <div className="absolute top-44 left-1/2 transform -translate-x-1/2 w-full max-w-4xl px-8">
+        {/* Avatar - Smaller to fit better */}
+        <div className="flex justify-center mb-6">
           <div className="relative">
-            <div className="w-48 h-48 rounded-lg border-4 border-red-500 overflow-hidden shadow-2xl bg-gray-800">
+            <div className="w-32 h-32 rounded-lg border-4 border-red-500 overflow-hidden shadow-2xl bg-gray-800">
               <div className="w-full h-full bg-cover bg-center"
                 style={{ backgroundImage: `url(/lovable-uploads/5991336c-bb16-4a71-884c-2a3e73be27be.png)` }} />
             </div>
-            <div className="absolute inset-0 w-48 h-48 rounded-lg border-4 border-red-500 shadow-lg shadow-red-500/20"></div>
+            <div className="absolute inset-0 w-32 h-32 rounded-lg border-4 border-red-500 shadow-lg shadow-red-500/20"></div>
           </div>
         </div>
 
-        {/* Boot Info */}
-        <div className="mb-8 text-gray-400 text-sm">
-          <div>Booting tcp.dns Terminal Interface v2.52...</div>
-          <div>Boot time: {bootTime}s</div>
-          <div className="mt-2">Use ↑ and ↓ to select which entry is highlighted.</div>
-          <div>Press ENTER to boot the selected OS, 'e' to edit the</div>
-          <div>commands before booting or 'c' for a command-line.</div>
+        {/* Boot Info - Condensed */}
+        <div className="mb-6 text-gray-400 text-sm">
+          <div>Booting tcp.dns Terminal Interface v2.52... Boot time: {bootTime}s</div>
+          <div className="mt-1">Use ↑↓ to select, ENTER to boot, 'e' to edit, 'c' for command-line.</div>
         </div>
 
         {/* Menu Entries */}
-        <div className="grub-menu-container bg-blue-900/20 border border-blue-500/50 rounded p-4">
+        <div className="grub-menu-container bg-blue-900/20 border border-blue-500/50 rounded p-4 max-h-80 overflow-y-auto">
           {menuEntries.map((entry, index) => {
             const sectionTitle = getSectionTitle(index);
             return (
@@ -222,47 +261,12 @@ export const MainMenu = ({ onSelection }: MainMenuProps) => {
               </div>
             );
           })}
-
-          {/* 💰 Payment Section */}
-          <div className="text-yellow-400 font-bold text-sm mb-2 mt-6">
-            ═══ PAYMENT LINKS ═══
-          </div>
-          {paymentEntries.map((pay, i) => (
-            <div key={i} className="flex items-center justify-between bg-gray-800/40 hover:bg-gray-700/50 p-2 mb-2 rounded">
-              <span className="text-gray-200 font-mono">{pay.title}</span>
-              <button
-                onClick={() => copyToClipboard(pay.value)}
-                className="bg-purple-700 hover:bg-purple-600 text-xs px-3 py-1 rounded font-bold"
-              >
-                {copied === pay.value ? "✔ COPIED" : "COPY"}
-              </button>
-            </div>
-          ))}
         </div>
 
-        {/* Footer */}
-        <div className="mt-8 text-gray-500 text-xs text-center">
+        {/* Footer - Simplified */}
+        <div className="mt-4 text-gray-500 text-xs text-center">
           <div>The highlighted entry will be executed automatically in 30s.</div>
-          <div className="mt-2">GNU GRUB comes with ABSOLUTELY NO WARRANTY.</div>
-        </div>
-      </div>
-
-      {/* Audio Toggle */}
-      <button
-        onClick={toggleAudio}
-        className="absolute top-4 right-4 z-40 bg-purple-700/50 hover:bg-purple-600/70 border border-purple-500 px-3 py-1 rounded text-xs font-bold transition-all"
-        title="Toggle Audio"
-      >
-        {audioEnabled ? '🔊' : '🔇'}
-      </button>
-
-      {/* User Info */}
-      <div className="absolute top-20 left-8">
-        <div className="bg-gray-900/50 border border-gray-600/50 rounded-lg p-4 backdrop-blur-sm">
-          <div className="text-red-400 font-bold text-lg mb-1">tcp.dns</div>
-          <div className="text-gray-300 text-sm">System Administrator</div>
-          <div className="text-gray-400 text-xs mt-1">Terminal Interface v2.52</div>
-          <div className="text-red-400 text-xs mt-2">● Online • Authenticated</div>
+          <div className="mt-1">GNU GRUB comes with ABSOLUTELY NO WARRANTY.</div>
         </div>
       </div>
 
