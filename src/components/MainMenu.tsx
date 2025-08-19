@@ -17,12 +17,13 @@ interface PaymentEntry {
 
 const menuEntries: MenuEntry[] = [
   // Social Section
-  { title: "nosynt.io", href: "https://https://esco.plentifulpower.xyz/", type: "Project" }, 
   { title: "Crypto Exchange", href: "https://crypto.tavernappy.xyz", type: "Crypto Exchange" },
   { title: "GitHub Repository", href: "https://github.com/TaverNxyz", type: "GitHub Repository" },
   { title: "Discord Profile", href: "https://discord.com/users/1256365134826311751", type: "Discord Profile" },
   { title: "Steam Profile", href: "https://steamcommunity.com/id/terryyyyyyy/", type: "Steam Profile" },
   // Projects Section
+  { title: "Valorant TPM Bypass", href: "https://publicized.plentifulpower.xyz/", type: "Project" },
+  { title: "nosynt.io", href: "https://https://esco.plentifulpower.xyz/", type: "Project" },
   { title: "RageLive Public", href: "https://publicized.ragelive.xyz/", type: "Project" },
   { title: "Plentiful Power", href: "https://plentifulpower.xyz/", type: "Project" },
   { title: "Plentiful Power Main", href: "https://main.plentifulpower.xyz/", type: "Project" },
